@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +11,9 @@ namespace ShapeLib.VShape
     {
       public   List<Shape> baseShape = new List<Shape>();
       public   List<Shape> controlShape = new List<Shape>();
+      public   List<Shape> baseShape1 = new List<Shape>();
+      public   List<Shape> baseShape2 = new List<Shape>();
+      public   List<Shape> baseShape3 = new List<Shape>();
 
 
 
