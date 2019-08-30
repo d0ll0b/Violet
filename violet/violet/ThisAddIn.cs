@@ -1,6 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+              
+using System;   ///<summary>
+                ///允許空間
+                ///</summary>
+using System.Collections.Generic;   ///<summary>
+                                    ///命名空間包含會定義泛型集合的介面和類別
+                                    ///</summary>
+                                    		
+using System.Linq;  ///<summary>
+                    ///傳一个連接字符串或是配置文件的連接字符的配置名
+                    ///</summary>
 using System.Text;
 using System.Xml.Linq;
 using Word = Microsoft.Office.Interop.Word;
@@ -30,32 +38,31 @@ namespace violet
 
         #region VSTO 產生的程式碼
 
-        /// <summary>
-        /// 此為設計工具支援所需的方法 - 請勿使用程式碼編輯器
-        /// 修改這個方法的內容。
-        /// </summary>
+        
+        // 此為設計工具支援所需的方法 - 請勿使用程式碼編輯器修改這個方法的內容。
         private void InternalStartup()
         {
             this.Startup += new System.EventHandler(ThisAddIn_Startup);
             this.Shutdown += new System.EventHandler(ThisAddIn_Shutdown);
         }
-        
-        #endregion
 
-        bool doonce = false;
+        #endregion          
 
+        bool doonce = false;    ///</summary>
+                                ///設定為錯誤的
+                                ///</summary>
 
         //程式進入點
         protected override object RequestService(Guid serviceGuid)
         {
-            if ( !doonce)
+            if (!doonce)
             {
                 Application.DocumentBeforeSave += Application_DocumentBeforeSave;
                 //  Application.WindowSelectionChange += Application_WindowSelectionChange;
                 Application.WindowBeforeDoubleClick += Application_WindowBeforeDoubleClick;
                 doonce = true;
             }
-            
+
             return base.RequestService(serviceGuid);
         }
 
@@ -99,15 +106,15 @@ namespace violet
         {
             _Document vstoDocument = Globals.Factory.GetVstoObject(this.Application.ActiveDocument) as _Document;
             //List<ControlProperties> savedControls = new List<ControlProperties>();
-           // Chem4Word.Core.ControlProperties[] controls =new Chem4Word.Core.ControlProperties[100];
-           // Chem4Word.Core.ControlsStorage.Store(vstoDocument, controls);
+            // Chem4Word.Core.ControlProperties[] controls =new Chem4Word.Core.ControlProperties[100];
+            // Chem4Word.Core.ControlsStorage.Store(vstoDocument, controls);
             //throw new NotImplementedException();
 
 
 
             //savedControls.Sort(new ControlCollectionComparer());
             //ControlsStorage.Store(doc, savedControls.ToArray());
-            
+
         }
 
 
@@ -121,9 +128,9 @@ namespace violet
 
 
 
-               // if (sel == WdSelectionType.wdSelectionInlineShape)
+                // if (sel == WdSelectionType.wdSelectionInlineShape)
                 {
-                  //  InlineShapes shape = vstoDocument.InlineShapes;
+                    //  InlineShapes shape = vstoDocument.InlineShapes;
                     //shape[0].
                     MemoryStream ms = new MemoryStream(_utility.BitmapBytes);
 
@@ -136,7 +143,7 @@ namespace violet
                     // Word.ContentControl contentControl = Globals.ThisAddIn.Application.ActiveDocument.SelectContentControlsByTitle(_utility.TagName)[0];
                     //foreach (Word.ContentControl contentControl in vstoDocument.Content.ContentControls)
                     {
-                      //  WdContentControlType type = contentControl.Type;
+                        //  WdContentControlType type = contentControl.Type;
                         //if (type == WdContentControlType.wdContentControlPicture && contentControl.Tag.Equals(_utility.TagName))
                         {
 
@@ -150,22 +157,22 @@ namespace violet
                             //contentControl.Title = "violet";
                             Microsoft.Office.Interop.Word.ContentControl cp2 = selection.Range.ParentContentControl;
 
-                            if (cp2!= null )//update
+                            if (cp2 != null)//update
                             {
-                                
 
-                                    
-                                    CustomXMLPart xmlpart = vstoDocument.CustomXMLParts.SelectByID(cp2.Tag);
-                                    xmlpart.Delete();
-                                    cp2.Delete();
-                                    
 
-                                
-                                
+
+                                CustomXMLPart xmlpart = vstoDocument.CustomXMLParts.SelectByID(cp2.Tag);
+                                xmlpart.Delete();
+                                cp2.Delete();
+
+
+
+
 
                             }
-                             
-                            
+
+
                             CustomXMLPart cp = vstoDocument.CustomXMLParts.Add(_utility.xml);
 
 
@@ -173,12 +180,12 @@ namespace violet
                             piccontrol.Image = _drawnimage;// ScaleImage(_drawnimage, 200, 150);//Save(new Bitmap(returnImage), 270, 180, 0);
                             piccontrol.Title = "violet";
                             piccontrol.Tag = cp.Id;
-                            
+
                         }
 
                     }
 
-              //      vstoDocument.Save();
+                    //      vstoDocument.Save();
                     ms.Flush();
                     ms.Close();
                 }
@@ -186,11 +193,14 @@ namespace violet
 
 
         }
-
+        ///<summary>	
+        ///建立圖片的寬
+        ///</summary>
         public static Image ScaleImage(Image image, int maxWidth, int maxHeight)
         {
-            var ratioX = (double)maxWidth / image.Width;
-            var ratioY = (double)maxHeight / image.Height;
+            var ratioX = (double)maxWidth; // image.Width;
+            var ratioY = (double)maxHeight;// image.Height;
+
             var ratio = Math.Min(ratioX, ratioY);
 
             var newWidth = (int)(image.Width * ratio);
@@ -202,3 +212,4 @@ namespace violet
         }
     }
 }
+
