@@ -1,16 +1,17 @@
-﻿using Microsoft.Office.Tools.Ribbon;
+using Microsoft.Office.Tools.Ribbon;
 using ShapeLib.VShape;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 //using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks;	/// <summary>
+///允許空間使用類別
+/// </summary>
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -19,10 +20,14 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 
 
-namespace ShapeLib.VShape
+namespace ShapeLib.VShape		/// <summary>
+///宣告範圍
+/// </summary>
 {
 
-    //建構不同UI 時使用
+    /// <summary>
+    ///建構不同UI 時使用
+    /// </summary>
     public enum shapeUIType
     {
         RibbonBigButton,
@@ -30,8 +35,10 @@ namespace ShapeLib.VShape
         RibbonMenu,
         RibbonGroup
     }
-    
-    //定義一個UI項目
+
+    /// <summary>
+    ///定義一個UI項目
+    /// </summary>
     public class shapeUI
     {
 
@@ -40,24 +47,36 @@ namespace ShapeLib.VShape
         public String label;
         public ArrayList items;
         public RibbonControlEventHandler click;
-        public string belong; //屬於某一Group 或 menu
-
+        /// <summary>
+        ///判斷按下Button控制項
+        /// </summary>
+        public string belong;	/// <summary>
+///屬於某一Group 或 menu
+/// </summary>
     }
 
 
-    //某一類的形狀.包含UI 的界面,繪製方式.更新方式.新增方式
     public class ShapeObj : IShapeUI, IDrawing, IUpdateOP, IInsertOP
+    /// <summary>
+    ///某一類的形狀.包含UI 的界面,繪製方式.更新方式.新增方式
+    /// </summary>
     {
 
         protected gPath currPath;
 
         public virtual System.Collections.ArrayList getMenuItem()
+        /// <summary>
+        ///覆寫System.Collections.ArrayList
+        /// </summary>
         {
-
-            ArrayList ret = new ArrayList();
-
+            ArrayList ret = new ArrayList();	/// <summary>
+///依使用大小增加的陣列ret
+/// </summary>
             shapeUI ui = new shapeUI();
             ui.uitype = shapeUIType.RibbonGroup;
+            /// <summary>
+            ///介面型態
+            /// </summary>
             ui.label = "Shapes";
             ret.Add(ui);
 
@@ -82,15 +101,15 @@ namespace ShapeLib.VShape
 
         }
 
-        //UI 點選
+        /// <summary>
+        /// UI 點選
+        /// </summary>
         public void btn_Click(object sender, RibbonControlEventArgs e)
         {
 
             MouseOP(0);
         }
 
-
-        //ntype 0 for insert mode,  1 for update mode
         public void MouseOP(int ntype)
         {
             IForm f = null;
@@ -104,7 +123,7 @@ namespace ShapeLib.VShape
                 shapeLib.Data.Root = f.getRoot;
             }
 
-                
+
 
             if (shapeLib.Data.mygrid != null)
             {
@@ -161,7 +180,9 @@ namespace ShapeLib.VShape
 
         }
 
-        //從xml 生成data
+        /// <summary>
+        ///從xml 生成data
+        /// </summary>
         public ShapeObj Create(string svg)
         {
             throw new NotImplementedException();
@@ -172,16 +193,21 @@ namespace ShapeLib.VShape
             throw new NotImplementedException();
         }
 
-        //存檔時存生xml 
+        /// <summary>
+        ///存檔時存生xml
+        /// </summary>
         public string SVGString()
         {
             throw new NotImplementedException();
         }
 
-        //依data 繪製,如果是第一次畫要新建shape, 更新的話只要更新最後一點
+        /// <summary>
+        ///依data 繪製,如果是第一次畫要新建shape, 更新的話只要更新最後一點
+        /// </summary>
         public virtual void DrawShape(gView gv, gPath data, Boolean bfirst)
         {
             if (bfirst)
+
             {
                 shapeLib.Data.Status = "rest";
                 shapeLib.Data.bfirst = false;
@@ -207,11 +233,6 @@ namespace ShapeLib.VShape
             else
             {
                 Line myLine = (Line)gv.baseShape[0];// =(Line) currPath.getDrawShape();
-            
-                myLine.X1 = data.controlBtn1.X;
-                myLine.Y1 = data.controlBtn1.Y;
-            
-
                 myLine.X2 = data.controlBtn4.X;
                 myLine.Y2 = data.controlBtn4.Y;
             }
@@ -262,22 +283,6 @@ namespace ShapeLib.VShape
 
         public void MouseDownUpdate(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (shapeLib.Data.gdc.bmove)
-            {
-                shapeLib.Data.gdc.bbegmove = true;
-
-            }
-
-
-            if ( shapeLib.Data.gdc.brotate)
-            {
-                shapeLib.Data.gdc.bbegrotate = true;
-                shapeLib.Data.gdc.totalAngle = 0;
-
-
-
-            }
-
             //int tempDraw = shapeLib.Data.gdc.sroot.PathList[shapeLib.Data.ru.Sel].drawtype;
             //if (tempDraw == 3)
             //{
@@ -311,92 +316,11 @@ namespace ShapeLib.VShape
 
         public void MouseUpUpdate(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-
-            if (shapeLib.Data.gdc.bmove || shapeLib.Data.gdc.brotate)
-            {
-                shapeLib.Data.gdc.bmove = false;
-                shapeLib.Data.gdc.brotate = false;
-                shapeLib.Data.gdc.bbegrotate = false;
-                shapeLib.Data.gdc.bbegmove = false;
-                shapeLib.Data.currShape.isSel = false;
-               
-            }
             //throw new NotImplementedException();
         }
-        
-
 
         public void MouseMoveUpdate(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            double gapX, gapY, x, y;
-
-            if (shapeLib.Data.gdc.bmove  )
-            {
-                gapX = Math.Abs(shapeLib.Data.currShape.controlBtn4.X + shapeLib.Data.currShape.controlBtn1.X) / 2.0;
-                gapY = Math.Abs(shapeLib.Data.currShape.controlBtn4.Y + shapeLib.Data.currShape.controlBtn1.Y) / 2.0;
-                x = e.GetPosition(shapeLib.Data.mygrid).X;
-                y = e.GetPosition(shapeLib.Data.mygrid).Y;
-                shapeLib.Data.currShape.controlBtn4.X = shapeLib.Data.currShape.controlBtn4.X + (x - gapX);
-                shapeLib.Data.currShape.controlBtn4.Y = shapeLib.Data.currShape.controlBtn4.Y + (y - gapY);
-                shapeLib.Data.currShape.controlBtn1.X = shapeLib.Data.currShape.controlBtn1.X + (x - gapX);
-                shapeLib.Data.currShape.controlBtn1.Y = shapeLib.Data.currShape.controlBtn1.Y + (y - gapY);
-                shapeLib.Data.currShape.controlBtn2.X = shapeLib.Data.currShape.controlBtn2.X + (x - gapX);
-                shapeLib.Data.currShape.controlBtn2.Y = shapeLib.Data.currShape.controlBtn2.Y + (y - gapY);
-                shapeLib.Data.currShape.controlBtn3.X = shapeLib.Data.currShape.controlBtn3.X + (x - gapX);
-                shapeLib.Data.currShape.controlBtn3.Y = shapeLib.Data.currShape.controlBtn3.Y + (y - gapY);
-
-                shapeLib.Data.currShape.redraw(1);
-
-            }
-
-            if ( shapeLib.Data.gdc.bbegrotate)
-            {
-                gapX = Math.Abs(shapeLib.Data.currShape.controlBtn4.X + shapeLib.Data.currShape.controlBtn1.X) / 2.0;
-                gapY = Math.Abs(shapeLib.Data.currShape.controlBtn4.Y + shapeLib.Data.currShape.controlBtn1.Y) / 2.0;
-
-                x = e.GetPosition(shapeLib.Data.mygrid).X;
-                y = e.GetPosition(shapeLib.Data.mygrid).Y;
-
-                double dx = x - gapX;
-                double dy = y - gapY;
-               double  angle = Math.Atan2(dy, dx);
-               double  CurrentAngle =angle* 180 / Math.PI;
-
-                CurrentAngle = CurrentAngle - shapeLib.Data.gdc.totalAngle;
-
-
-                System.Drawing.Drawing2D.Matrix rotate_at_center = new
-                System.Drawing.Drawing2D.Matrix();
-                rotate_at_center.RotateAt((float )CurrentAngle,new System.Drawing.PointF( (float) gapX, (float)gapY));
-                PointF[] myArray =
-             {
-                 new PointF((float)shapeLib.Data.currShape.controlBtn1.X,(float) shapeLib.Data.currShape.controlBtn1.Y),
-                 new PointF((float)shapeLib.Data.currShape.controlBtn2.X,(float) shapeLib.Data.currShape.controlBtn2.Y),
-                 new PointF((float)shapeLib.Data.currShape.controlBtn3.X,(float) shapeLib.Data.currShape.controlBtn3.Y),
-                 new PointF((float)shapeLib.Data.currShape.controlBtn4.X,(float) shapeLib.Data.currShape.controlBtn4.Y)
-
-             };
-
-                rotate_at_center.TransformPoints(myArray);
-
-                shapeLib.Data.currShape.controlBtn1.X = myArray[0].X;
-                shapeLib.Data.currShape.controlBtn1.Y = myArray[0].Y;
-                shapeLib.Data.currShape.controlBtn2.X = myArray[1].X;
-                shapeLib.Data.currShape.controlBtn2.Y = myArray[1].Y;
-                shapeLib.Data.currShape.controlBtn3.X = myArray[2].X;
-                shapeLib.Data.currShape.controlBtn3.Y = myArray[2].Y;
-                shapeLib.Data.currShape.controlBtn4.X = myArray[3].X;
-                shapeLib.Data.currShape.controlBtn4.Y = myArray[3].Y;
-
-
-                shapeLib.Data.gdc.totalAngle += CurrentAngle;
-
-
-                shapeLib.Data.currShape.redraw(1);
-            }
-
-
-
             //  throw new NotImplementedException();
         }
 
@@ -433,7 +357,7 @@ namespace ShapeLib.VShape
 
                 if (px == ex && py == ey) //click
                 {
-        
+
                     //
                     Debug.WriteLine("click");
                     remGPath(px, py, ex, ey);
@@ -443,7 +367,10 @@ namespace ShapeLib.VShape
 
                     if (this.GetType() == typeof(ShapeCurve) && shapeLib.Data.mClick >= 3)
                     {
-                        currPath.drawtype = shapeLib.SupportedShape(null).IndexOf(this);//line,在shaplib 中的位置
+                        currPath.drawtype = shapeLib.SupportedShape(null).IndexOf(this);
+                        /// <summary>
+                        /// line,在shaplib 中的位置
+                        /// </summary>
                         shapeLib.Data.gdc.writeIn(currPath, 0);
                         shapeLib.Data.gdc.Release();
                         shapeLib.Data.mClick = 0;
@@ -462,13 +389,13 @@ namespace ShapeLib.VShape
                 }
                 if (this.GetType() == typeof(ShapeRectangle))
                 {
-                    if ( ex < px)
+                    if (ex < px)
                     {
                         tempX = ex;
                         ex = px;
                         px = tempX;
                     }
-                    if ( ey < py)
+                    if (ey < py)
                     {
                         tempY = ey;
                         ey = py;
@@ -517,7 +444,10 @@ namespace ShapeLib.VShape
                 }
                 // || shapeLib.Data.mClick >=2 )
                 {
-                    currPath.drawtype = shapeLib.SupportedShape(null).IndexOf(this);//line,在shaplib 中的位置
+                    currPath.drawtype = shapeLib.SupportedShape(null).IndexOf(this);
+                    /// <summary>
+                    /// line,在shaplib 中的位置
+                    /// </summary>
                     shapeLib.Data.gdc.writeIn(currPath, 0);
                     shapeLib.Data.gdc.Release();
                 }
@@ -612,7 +542,10 @@ namespace ShapeLib.VShape
 
 
         /*--------------  其他功能  --------------*/
-        protected void remGPath(double px, double py, double ex, double ey) //儲存新繪製的圖形資料
+        protected void remGPath(double px, double py, double ex, double ey)
+        /// <summary>
+        /// 儲存新繪製的圖形資料
+        /// </summary>
         {
             currPath.state.colorB = shapeLib.Data.colorB;
             currPath.state.colorG = shapeLib.Data.colorG;
@@ -703,7 +636,7 @@ namespace ShapeLib.VShape
                 shapeLib.Data.multiSelList.Clear();
 
             }
-            
+
 
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
