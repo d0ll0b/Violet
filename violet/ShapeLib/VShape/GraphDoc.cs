@@ -306,6 +306,12 @@ namespace ShapeLib.VShape
                     case -1:
                         foreach (Shape sp in gv.baseShape)
                             shapeLib.Data.mygrid.Children.Remove(sp);
+                        foreach (Shape sp in gv.baseShape1)
+                            shapeLib.Data.mygrid.Children.Remove(sp);
+                        foreach (Shape sp in gv.baseShape2)
+                            shapeLib.Data.mygrid.Children.Remove(sp);
+                        foreach (Shape sp in gv.baseShape3)
+                            shapeLib.Data.mygrid.Children.Remove(sp);
                         break;
 
 
